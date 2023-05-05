@@ -50,7 +50,7 @@ function Login(){
           </div>
          
           <div class="mb-3 mt-3">
-      <input ref={emailRef} type="email" class="form-control" id="exampleFormControlInput3" placeholder="email@"/>
+      <input ref={emailRef} type="email" class="form-control" id="exampleFormControlInput3" placeholder="@email"/>
         </div>
         <div class="mb-4 mt-1">
       <input ref={phoneRef} type="number" class="form-control" id="exampleFormControlInput4" placeholder="Номер телефона"/>

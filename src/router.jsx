@@ -5,7 +5,7 @@ import Courses from "./views/course";
 import Check from "./views/check"; 
 import Quiz from "./views/quiz"; 
 import Test from "./views/test";
-import Result from "./views/result";
+
 
 const router = createBrowserRouter([
     {
@@ -32,10 +32,7 @@ const router = createBrowserRouter([
     {
         path:"/Test",
         element:<Test/>
-    },
-    {
-        path:"/:chatid/quiz/Result",
-        element:<Result/>
     }
 ])
 export default router
+
