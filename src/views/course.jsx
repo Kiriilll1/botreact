@@ -2,9 +2,15 @@ import { useEffect, useState } from "react"
 import axiosClient from "../axiosclient"
 import { useParams } from "react-router-dom"
 import { Link } from 'react-router-dom'
-import { ModalDialog } from "react-bootstrap"
+import { Modal, ModalDialog } from "react-bootstrap"
+
 // style={{backgroundColor:"#8c64d8",color:"#ffffff"}}
 function Courses(){
+    const [show, setShow] = useState(false);
+
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
+
     const [user, setUser]= useState([])
     const routerParams = useParams()
     useEffect(()=>{
@@ -21,6 +27,7 @@ function Courses(){
             setUser(data.data)
         })
     }
+
 
 
 
@@ -52,7 +59,22 @@ function Courses(){
                                 </li>
                                 <li class="nav-item">
                                     <div className="btn">
-                                <Link to="#" class="nav-link " href="#" style={{color:"#8c64d8"}}>Обратная связь</Link>
+                                <Link to="#" class="nav-link " onClick={handleShow} href="#" style={{color:"#8c64d8"}}>Обратная связь</Link>
+                                        <Modal show={show}>
+                                            <Modal.Header closeButton> 
+                                                <Modal.Title>Обратная связь</Modal.Title>
+                                            </Modal.Header>
+                                            <Modal.Body>
+                                                <input type="text"></input>
+                                            </Modal.Body>
+                                            <Modal.Footer>
+                                            <button className="btn"  style={{background:"#8c64d8", color:"#FFFFFF"}} onClick={handleClose}>Закрыть</button>
+                                                <button className="btn"  style={{background:"#8c64d8", color:"#FFFFFF"}} onClick={handleClose}>
+                                                        Отправить
+                                                </button>
+                                            </Modal.Footer>
+                                        </Modal>
+
                                     </div>
                                 </li>
                             </ul>
@@ -107,6 +129,7 @@ function Courses(){
                 </div>
             </div>
         </div>
+        
         )
   }
   export default Courses

@@ -5,6 +5,13 @@ import { Link, useParams } from "react-router-dom"
 import { Form } from 'react-bootstrap'
 import Result from "./result"
 import ReactPlayer from "react-player";
+import { configure } from "mobx"
+import { makeAutoObservable, reaction, observable } from "mobx"
+
+
+const quizNew = observable(() => {
+    const AnswersStorage =  0
+})
 
 function Quiz(){
     const [question, setQuestion]= useState([])
@@ -20,11 +27,16 @@ function Quiz(){
 
     const [checked, setChecked] = useState(false)
 
+    const [jopago, setJopago] = useState([])
+    const [bool, setBool] = useState(false)
+ 
     useEffect(()=>{
         getQuestions()
+        
     },[])
 
     const getQuestions= async()=>{
+        
         const payload = {
             "test_id": routerParams.testid
         }
@@ -32,29 +44,50 @@ function Quiz(){
         .then(async ({data})=>{
             await setQuestion(data.questions)
             await setAnswer(data.answers)
-            setTotalQuestion(data.questions.length)
+            await setTotalQuestion(data.question.length)
+            
         })
     }
-    const jopago=[]
+
+    const test = () => {
+        setBool(true)
+        if (bool === false) question.map((e) => jopago.push({q_id: e.id, a_id: 0}))
+    }
+    
+    let checkanswer=[]
+    const handleClickbox= (e, a, q) =>{
+        const checkbox =document.getElementById(q.id)
+        if (checkbox.checked){
+            checkanswer.push({q_id: q.id, a_id: a.id})
+            console.log(checkanswer)
+            
+        } else{
+            let index 
+            index=checkanswer.indexOf()
+            checkanswer.splice(index, 1)
+        }
+    }
+    
+    
+    const handleClicktext =(e, a, q) =>{
+        test()
+        console.log(a)
+    }
+
+
+
     const handleClick = (e, a, q) => {
-        if (a.is_rigth === true) {
-            let right_index = jopago.findIndex(e => e.q_id === a.question_id)
-            if (right_index === -1) {
-                console.log('index = -1');
-            } else {
-                jopago.splice(right_index, 1)
-            }
+        test()
+        console.log(jopago);
+        let index = jopago.findIndex(e => e.q_id === a.question_id)
+        if (index === - 1) {
+            jopago.push({q_id: q.id, a_id: a.id})
+        } else {
+            jopago[index] = {q_id: q.id, a_id: a.id}
         }
 
-        if (a.is_right == false) {
-            let index = jopago.findIndex(e => e.q_id === a.question_id) 
-            if (index === -1) {
-                jopago.push({q_id:q.id, a_id:a.id})
-            } else {
-                jopago[index] = {q_id: q.id, a_id: a.id}
-            }
-        } 
         console.log(jopago);
+
     }
     const onSubmit=async (jopago)=>{
         setChecked(true)
@@ -82,50 +115,59 @@ function Quiz(){
         }
         axiosClient.post('/createResult',load)
     }
-
+    
     return(
         <>
         {
             checked == false
                 ?
                 <>
-                <div className="text-center mt-3">Информатика</div>
+                <div className="text-center mt-3">сделать название теста </div>
                 <div className="container mt-3">
                 <form class="Hueta">
-
+                
+                
                     {question.map((q) => (
-                        <> <h1 className="text-center ">
+                        <> <h1 className="text-center">
                             {q.text}
                         </h1>
                             {answer.map((a) => (
+                                
                                 a.question_id == q.id &&
+                                
                                 // <div className="form-check">
                                 //     <input style={{ color:"#8c64d8"}} type="radio" id={q.id} name={q.id}/>
                                 //     <label className="mt-1" htmlFor={q.id}>{a.text}</label>
                                 // </div>
-                                <div className="form-check">
-                                    <input style={{ color: "#8c64d8" }} type="radio" id={q.id} name={q.id} onChange={e => handleClick(e, a, q)} />
-                                    <label className="form-check-label mt-1" for={q.id}> {a.text}</label>
+                                <div>
+                                    
+                                    <label style={{padding:"1px"}}> {a.text}
+                                    <input class="form-check-input" style={{ color: "#8c64d8" }} type="radio" id={q.id} name={q.id} onChange={e => handleClick(e, a, q)} />
+                                    </label>
+                                    
+                                
                                 </div>
 
                             ))}
                         </>
                     ))}
-                    <div class="progress fixed-top " role="progressbar" style={{ color: "#8c64d8" }} aria-label="Animated striped example" aria-valuemin="0" aria-valuemax="100">
-                        <div class="striped variant" style={{ background: "#8c64d8", color: "#342827", width: "6%" }}></div>
-                    </div>
+                    <div class="progress fixed-top" role="progressbar" style={{ color: "#8c64d8" }} aria-label="Animated striped example" aria-valuemin="0" aria-valuemax="100">
+                        <div class="striped variant text-center"  style={{ background: "#8c64d8", color: "#ffffff", width:"30%" }}> </div>
+                    </div> 
+                    <div  class="fixed-bottom p-3 mb-1">
                     <button className="container btn mt-1 " onClick={e => onSubmit(jopago)} style={{ background: '#8c64d8', color: "#ffffff" }} type="button">Сдать</button>
+                    </div>
                 </form>
             </div>
                 </>
                 :
                 <div className="container" >
-                    <h1 className="text-center">Итог: </h1>
+                    <h1 className="text-center p-2">Результат: </h1>
                     {wrongQuestion.map((q) => (
                         <> 
-                        <h1 className="row">
+                        <h3 className="row mb-1 p-1">
                             {q.text}
-                        </h1>
+                        </h3>
                             {
                                 wrongAnswer.map((a) => (
                                     a.map((i) => (
@@ -148,16 +190,24 @@ function Quiz(){
                         </>
                     ))}
 
-                    <h1 className="text-center">Верных ответов: {totalQuestion-totalWrongQuestion} из {totalQuestion}</h1>
+                    <h1 className="text-center p-2">Верных ответов: {totalQuestion-totalWrongQuestion} из {totalQuestion}</h1>
                     {
                         totalQuestion===totalQuestion-totalWrongQuestion &&
                         <div> Ты ответил на все вопросы правильно вот твой SIUUUU
                             <ReactPlayer url="https://www.youtube.com/watch?v=TP_FoJfDPCQ&ab_channel=ElTrend" width="100%" controls></ReactPlayer>
                         </div>
                     }
-                <div>
-                    <Link to={`/${routerParams.chatid}/main`} class="btn fixed-bottom" style={{background:"#8c64d8",color:"#ffffff"}}>Вернуться к тестам</Link>
+                
+                
+                <div className="fixed-bottom p-4 mb-3"  >
+                    <div className="">
+                        <p style={{textAlign:"left"}}>🟩 - верный ответ  🟥 - ваш ответ</p> 
+                    </div>
                 </div>
+                
+                <div className="fixed-bottom d-grid gap-2 p-2"><Link to={`/${routerParams.chatid}/main`} className="btn " style={{background:"#8c64d8",color:"#ffffff"}}>Вернуться к тестам</Link></div>    
+                    
+                
                 </div>
         }
         </>
