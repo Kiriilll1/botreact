@@ -28,8 +28,10 @@ function Check(){
 
     return(
         <div className="text-center">
-        <div className="spinner-border m-5 mx-auto" role="status" style={{color: '#8c64d8',width:"3rem", height:"3rem"}}>
-            <span className="visually-hidden">Loading...</span>
+        <div className="spinner-grow m-5 mx-auto" role="status" style={{color: '#8c64d8',width:"5rem", height:"5rem"}}>
+        </div>
+        <div>
+            <span className="visually-show fixed-bottom" style={{color:"#000000"}}>Loading...</span>
         </div>
         </div>
     )

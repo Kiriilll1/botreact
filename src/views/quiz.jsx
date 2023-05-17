@@ -2,12 +2,13 @@ import { useEffect, useState } from "react"
 import axiosClient from "../axiosclient"
 import axios from "axios"
 import { Link, useParams } from "react-router-dom"
-import { Form } from 'react-bootstrap'
+import { Form, ModalTitle } from 'react-bootstrap'
 import Result from "./result"
 import ReactPlayer from "react-player";
 import { configure } from "mobx"
 import { makeAutoObservable, reaction, observable } from "mobx"
-
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
 
 const quizNew = observable(() => {
     const AnswersStorage =  0
@@ -21,15 +22,24 @@ function Quiz(){
     const [wrongAnswer, setWrongAnswer] = useState([])
     const [wrongQuestion, setWrongQuestion] = useState([])
 
+    const [compliteQuestion , setCompliteQuestion] = useState(0)
     const [totalQuestion , setTotalQuestion] = useState(0)
     const [totalWrongQuestion , setTotalWrongQuestion] = useState(0)
 
+    // const [answerQuestionIdSet, setAnswerQuestionIdSet] = useState([])
 
     const [checked, setChecked] = useState(false)
+    const [loading, setLoading] = useState(true)
 
     const [jopago, setJopago] = useState([])
     const [bool, setBool] = useState(false)
- 
+
+    const [show, setShow] = useState(false)
+
+    const handleClose = () => setShow(false)
+    const handleShow = () => setShow(true)
+    
+    
     useEffect(()=>{
         getQuestions()
         
@@ -44,93 +54,192 @@ function Quiz(){
         .then(async ({data})=>{
             await setQuestion(data.questions)
             await setAnswer(data.answers)
-            await setTotalQuestion(data.question.length)
-            
+            await setTotalQuestion(data.questions.length)
+            setLoading(false)
         })
     }
 
     const test = () => {
         setBool(true)
-        if (bool === false) question.map((e) => jopago.push({q_id: e.id, a_id: 0}))
+        if (bool === false) question.map((e) => jopago.push({q_id: e.id, q_type: e.type, answer: null}))
     }
     
+
+
     let checkanswer=[]
     const handleClickbox= (e, a, q) =>{
+        test()
+        
+        
+
         const checkbox =document.getElementById(q.id)
+
+        a['checked'] = e.target.checked;
+
+        const answerChecked = answer.filter((elem) => {
+            return elem.checked
+        })
+        console.log(answerChecked)
+        const answerQuestionId = answerChecked.map((el)=> {
+            return el.question_id
+        })
+        const answerQuestionIdSet = [...new Set(answerQuestionId)];
+        // setAnswerQuestionIdSet([...new Set(answerQuestionId)])
+        setCompliteQuestion(answerQuestionIdSet.length)
+        console.log(answerQuestionIdSet)
         if (checkbox.checked){
-            checkanswer.push({q_id: q.id, a_id: a.id})
-            console.log(checkanswer)
+            checkanswer.push(a)
             
         } else{
-            let index 
-            index=checkanswer.indexOf()
-            checkanswer.splice(index, 1)
+            checkanswer.splice()
         }
+
+        // Deleting null answer from jopago
+        if (a['checked']) {
+            setJopago(jopago.filter((obj) => {
+                return obj.q_id !== q.id
+            }))
+        }
+        console.log(jopago);
     }
-    
+
     
     const handleClicktext =(e, a, q) =>{
         test()
-        console.log(a)
+
+        let index = jopago.findIndex(e => e.q_id === a.question_id)
+        if (index === - 1) {
+            jopago.push({q_id: q.id, q_type: q.type, answer: e})
+        } else {
+            jopago[index] = {q_id: q.id, q_type: q.type, answer: e}
+        }
+        console.log(jopago)
+
+        
+        // a['checked'] = e.target.checked;
+        if (document.getElementById(q.id).value!=""){
+            a['checked'] = true
+        } else {
+            a['checked'] = false
+        }
+        const answerChecked = answer.filter((elem) => {
+            return elem.checked
+        })
+        
+        const answerQuestionId = answerChecked.map((el)=> {
+            return el.question_id
+        })
+        
+        const answerQuestionIdSet = [...new Set(answerQuestionId)];
+        // setAnswerQuestionIdSet([...new Set(answerQuestionId)])
+        // if (document.getElementById(q.id).value!=""){
+        //     answerQuestionIdSet.push(q.id)
+        // }
+        console.log("asdasda", answerQuestionIdSet);
+        setCompliteQuestion(answerQuestionIdSet.length)
     }
 
 
 
     const handleClick = (e, a, q) => {
         test()
-        console.log(jopago);
+        
         let index = jopago.findIndex(e => e.q_id === a.question_id)
         if (index === - 1) {
-            jopago.push({q_id: q.id, a_id: a.id})
+            jopago.push({q_id: q.id, q_type: q.type, answer: a})
         } else {
-            jopago[index] = {q_id: q.id, a_id: a.id}
+            jopago[index] = {q_id: q.id, q_type: q.type, answer: a}
         }
-
-        console.log(jopago);
-
+        a['checked'] = e.target.checked;
+        const answerChecked = answer.filter((elem) => {
+            return elem.checked
+        })
+        console.log(answerChecked)
+        const answerQuestionId = answerChecked.map((el)=> {
+            return el.question_id
+        })
+        const answerQuestionIdSet = [...new Set(answerQuestionId)];
+        // setAnswerQuestionIdSet([...new Set(answerQuestionId)])
+        setCompliteQuestion(answerQuestionIdSet.length)
+        
     }
     const onSubmit=async (jopago)=>{
         setChecked(true)
+        if (jopago.length == 0) {
+            test()
+            console.log(jopago);
+        }
+
+        const answerChecked = answer.filter((elem) => {
+            return elem.checked
+        })
+
+        if (answerChecked.length!=0) {
+            jopago.push(answerChecked)
+        }
+
         const payload = {
             "data": jopago
         }
-        
-            
-
+        let wrongQuestion
         await axiosClient.post('/checkResult',payload)
         .then(async ({data})=>{
+            wrongQuestion = data.questions.length
             setWrongQuestion(data.questions)
             setWrongAnswer(data.answers)
-            setTotalWrongQuestion((oldState) => oldState + data.questions.length)
+            setTotalWrongQuestion(data.questions.length)
             
         });
-        
-        const load={
+        // console.log(totalQuestion)
+        // console.log(totalWrongQuestion)
+        // const load={
     
-                "chat_id":routerParams.chatid,
-                "test_id":routerParams.testid,
-                "result":totalQuestion-totalWrongQuestion,
-                "all_question":totalQuestion
-        
-        }
-        axiosClient.post('/createResult',load)
+        //         "chat_id":routerParams.chatid,
+        //         "test_id":routerParams.testid,
+        //         "result":totalQuestion-totalWrongQuestion,
+        //         "all_question":totalQuestion
+        // }
+        await createResult(wrongQuestion)
     }
+
+    const createResult = async(wrongQuestion) => {
+        const load={
+            "chat_id":routerParams.chatid,
+            "test_id":routerParams.testid,
+            "result":totalQuestion-wrongQuestion,
+            "all_question":totalQuestion
+
+        }
+        console.log(load);
+        await axiosClient.post('/createResult',load)
+    }
+    
+    const progress = Math.round((compliteQuestion / totalQuestion) * 100)
+
     
     return(
         <>
         {
+            loading == true && 
+            <div className="text-center">
+                <div className="spinner-grow m-5 mx-auto" role="status" style={{color: '#8c64d8',width:"5rem", height:"5rem"}}>
+                    <span className="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        }
+        {
             checked == false
                 ?
                 <>
-                <div className="text-center mt-3">сделать название теста </div>
+                <div className="text-center mt-3"> сделать название теста </div>
                 <div className="container mt-3">
                 <form class="Hueta">
                 
                 
                     {question.map((q) => (
-                        <> <h1 className="text-center">
+                        <> <h3 className="row p-2">
                             {q.text}
-                        </h1>
+                        </h3>
                             {answer.map((a) => (
                                 
                                 a.question_id == q.id &&
@@ -141,28 +250,66 @@ function Quiz(){
                                 // </div>
                                 <div>
                                     
-                                    <label style={{padding:"1px"}}> {a.text}
-                                    <input class="form-check-input" style={{ color: "#8c64d8" }} type="radio" id={q.id} name={q.id} onChange={e => handleClick(e, a, q)} />
+                                    <label className="" style={{padding:"3px",marginBottom:""}}> 
+                                        {
+                                            q.type == 'text' 
+                                            ?
+                                                <input class="text" className="form-control" placeholder="Ответ" style={{verticalAlign:"middle",margin:"0" }} type={q.type} id={q.id} name={q.id} onKeyUp={e => handleClicktext(e.target.value, a, q)} />
+                                            : 
+                                                q.type=="radio"
+                                                ?
+                                                    <>
+                                                        {a.text}
+                                                        <input class="form-check-input" style={{verticalAlign:"middle",margin:"0" }} type={q.type} id={q.id} name={q.id} onChange={e => handleClick(e, a, q)} />
+                                                    </>
+                                                :
+                                                    <>
+                                                        {a.text}
+                                                        <input class="form-check-input" style={{verticalAlign:"middle",margin:"0" }} type={q.type} id={q.id} name={q.id} onChange={e => handleClickbox(e, a, q)} />
+                                                    </>
+
+
+
+                                        }
+
+                                    {/* <input class="form-check-input" style={{ color: "#8c64d8" }} type={q.type} id={q.id} name={q.id} onChange={e => handleClick(e, a, q)} /> */}
                                     </label>
                                     
-                                
                                 </div>
-
+                               
                             ))}
                         </>
                     ))}
                     <div class="progress fixed-top" role="progressbar" style={{ color: "#8c64d8" }} aria-label="Animated striped example" aria-valuemin="0" aria-valuemax="100">
-                        <div class="striped variant text-center"  style={{ background: "#8c64d8", color: "#ffffff", width:"30%" }}> </div>
+                        <div class="striped variant text-center"  style={{ background: "#8c64d8", color: "#ffffff", width:`${progress}%` }}> {progress}%</div>
                     </div> 
-                    <div  class="fixed-bottom p-3 mb-1">
-                    <button className="container btn mt-1 " onClick={e => onSubmit(jopago)} style={{ background: '#8c64d8', color: "#ffffff" }} type="button">Сдать</button>
+                    <div  class="p-3 mb-1">
+                    <button className="container btn mt-1 " onClick={handleShow} style={{ background: '#8c64d8', color: "#ffffff" }} type="button">Сдать</button>
+                        <Modal show={show}> 
+                            <Modal.Header>
+                                        <Modal.Title>Вы действительно хотите сдать тест?</Modal.Title>
+                            </Modal.Header>
+                                        <Modal.Footer>
+                                        <button type="button" class="btn btn-secondary" onClick={handleClose} data-bs-dismiss="modal">Отмена</button>
+                                        <button className="btn mt-1 " onClick={e => onSubmit(jopago)} style={{ background: '#8c64d8', color: "#ffffff" }} type="button">Сдать</button>
+                                        </Modal.Footer>
+                        </Modal>
+                                    {/* <button className="container btn mt-1 " onClick={e => onSubmit(jopago)} style={{ background: '#8c64d8', color: "#ffffff" }} type="button">Сдать</button> */}
+                    {/* onClick={e => onSubmit(jopago)} */}
                     </div>
                 </form>
             </div>
                 </>
                 :
-                <div className="container" >
+                <div className="container overflow-auto" >
+                    <div className="d-grid gap-2 p-2"><Link to={`/${routerParams.chatid}/main`} className="btn " style={{background:"#8c64d8",color:"#ffffff"}}>Вернуться к тестам</Link></div>
                     <h1 className="text-center p-2">Результат: </h1>
+                    <h1 className="text-center p-2">Верных ответов: {totalQuestion-totalWrongQuestion} из {totalQuestion}</h1>
+                    <div className=" p-1 "  >
+                    <div className="">
+                        <p style={{textAlign:"left"}}>🟩 - верный ответ  //🟥 - ваш ответ//</p> 
+                    </div>
+                </div>
                     {wrongQuestion.map((q) => (
                         <> 
                         <h3 className="row mb-1 p-1">
@@ -170,27 +317,26 @@ function Quiz(){
                         </h3>
                             {
                                 wrongAnswer.map((a) => (
-                                    a.map((i) => (
-                                        i.question_id == q.id &&
+                                    
+                                    
+                                        a.question_id == q.id &&
                                             (
-                                                i.is_right == false 
+                                                a.is_right == false 
                                                 ?
-                                                    i.is_clicked == true
+                                                    a.checked == true
                                                     ?
-                                                        <h4 style={{color: "#ff0000"}}>{i.text}</h4>
+                                                        <h6 style={{color: "#ff0000"}}>{a.text}</h6>
                                                     :
-                                                        <h4>{i.text}</h4>
+                                                        <h6>{a.text}</h6>
                                                 :
-                                                    i.question_id == q.id &&
-                                                        <h4 style={{color: '#00ff15'}}>{i.text}</h4>
+                                                    a.question_id == q.id &&
+                                                        <h6 style={{color: '#00ff15'}}>{a.text}</h6>
                                             )                                        
-                                    ))
                                 ))
                             }
                         </>
                     ))}
 
-                    <h1 className="text-center p-2">Верных ответов: {totalQuestion-totalWrongQuestion} из {totalQuestion}</h1>
                     {
                         totalQuestion===totalQuestion-totalWrongQuestion &&
                         <div> Ты ответил на все вопросы правильно вот твой SIUUUU
@@ -198,14 +344,7 @@ function Quiz(){
                         </div>
                     }
                 
-                
-                <div className="fixed-bottom p-4 mb-3"  >
-                    <div className="">
-                        <p style={{textAlign:"left"}}>🟩 - верный ответ  🟥 - ваш ответ</p> 
-                    </div>
-                </div>
-                
-                <div className="fixed-bottom d-grid gap-2 p-2"><Link to={`/${routerParams.chatid}/main`} className="btn " style={{background:"#8c64d8",color:"#ffffff"}}>Вернуться к тестам</Link></div>    
+                    
                     
                 
                 </div>

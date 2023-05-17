@@ -1,23 +1,46 @@
 import { useEffect, useState } from "react"
 import axiosClient from "../axiosclient"
 import { Link, useParams } from 'react-router-dom'
+import Login from "./Login"
+import { Modal, ModalDialog } from "react-bootstrap"
 
 function Main(){
     const [subject, setSubject] = useState([])
     const [test, setTest] = useState([])
+    const [show, setShow] = useState(false)
+
+    const [complete, setComplete] = useState([])
 
     const routerParams = useParams()
 
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
+
     useEffect(()=> {
         getSubject()
+        getComplete()
     }, [])
 
     const getSubject = async () => {
         await axiosClient.post('/getSubTest')
             .then(async ({data}) => {
                 await setSubject(data.subjects)
-                await setTest(data.tests)
+
+                // await setTest(data.tests)
+                let test_array = data.tests
+                getComplete(test_array)
+
             })
+    }
+    const feedback = async(text)=>{
+        // document.getElementsByTagName("input")[0].value
+        console.log("hui")
+        const payload={
+            // "chat_id":routerParams.chatid,
+            "text":text
+        }
+        await axiosClient.post("/sendFeedback",payload)
+        
     }
 
 const shadowButton={
@@ -30,6 +53,23 @@ const checkStyle={
     backgroundColor:"#8c64d8",
     border:"2px solid"
 }
+    const getComplete = async (test_array) =>{
+        await axiosClient.post('/checkTest')
+        .then(async ({data})=>{
+            setComplete(data.data)
+            let ara_ara = data.data
+            let ar = test_array.map((e) => {
+                if (ara_ara.includes(e.id)) {
+                    e['complete'] = true
+                    return e
+                } else {
+                    e['complete'] = false
+                    return e
+                }
+            })
+            setTest(ar)
+        })
+    }
 
     return(
         
@@ -37,9 +77,7 @@ const checkStyle={
           <div className="row" style={{background:"#8c64d8",height: "56px"}} > 
                 <nav class="navbar navbar fixed-top" style={{color:"#ffffff"}} >
                     <div class="container-fluid">
-                        <a class="navbar-brand " href="#" style={{color:"#ffffff"}}>
-                            
-                            Курсы</a>
+                        <a class="navbar-brand " href="#" style={{color:"#ffffff"}}>Курсы</a>
                         <button class="navbar-toggler btn btn-light"  type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrollingLabel" aria-controls="offcanvaskNavbar" aria-label="Toggle navigation" >
                             <span class="navbar-toggler-icon "> </span>
                         </button>
@@ -52,17 +90,28 @@ const checkStyle={
                             <ul class="navbar-nav ">
                                 <li class="nav-item">
                                     <div className="btn">
-                                <Link to="#" class="nav-link "  href="#">Главная</Link>
-                                    </div>
-                                </li>
-                                <li class="nav-item">
-                                    <div className="btn">
                                 <Link to={`/${routerParams.chatid}/course`} class="nav-link" href="#">Мой профиль</Link>
                                     </div>
                                 </li>
                                 <li class="nav-item">
                                     <div className="btn">
-                                <Link to="#" class="nav-link " href="#" style={{color:"#8c64d8"}}>Обратная связь</Link>
+                                <Link to="#" class="nav-link " onClick={handleShow} href="#" style={{color:"#8c64d8"}}>Обратная связь</Link>
+                                        <Modal show={show}>
+                                            <Modal.Header> 
+                                                <Modal.Title>Обратная связь</Modal.Title>
+                                            </Modal.Header>
+                                            <Modal.Body>
+                                                
+                                                <input className="form-control" placeholder="Введите ваш отзыв"></input>
+                                            </Modal.Body>
+                                            <Modal.Footer>
+                                            <button className="btn"  style={{background:"#8c64d8", color:"#FFFFFF"}} onClick={handleClose}>Закрыть</button>
+                                                <button className="btn" type="submit" style={{background:"#8c64d8", color:"#FFFFFF"}} id="feedbackID" onClick={feedback}>
+                                                        Отправить
+                                                </button>
+                                            </Modal.Footer>
+                                        </Modal>
+
                                     </div>
                                 </li>
                             </ul>
@@ -76,23 +125,33 @@ const checkStyle={
             </div>
             {
                 subject.map((s) => (
-                    <div className="d-grid mt-1" style={{width:""}}>
+                    <div className="d-grid mt-3" style={{width:""}}>
                     
                     <div className="btn p-2 mb-3 " style={shadowButton} type="button" data-bs-toggle='collapse' data-bs-target={`#${s.title.replace(' ', '')}`} aria-expanded="false" aria-controls='collapseExample'>
-                        <div className="container-md ">
+                        <div className="container-md">
                             <a className="navbar-brand text-center" href="#">{s.title}</a>
                         </div>
                     </div>
                     <div className="collapse" id={s.title.replace(' ', '')}>
-                        <div className="card card-body">
+                        <div className="card card-body" style={{background:""}}>
                             {
                                 test.map((t) => (
                                     <div className="from-check row ">
-                                    
-                                    {s.id == t.subject_id && <Link to={`/${routerParams.chatid}/quiz/${t.id}`} className="btn " style={{background:"",color:"#8c64d8",border:"2px solid"}}> <input className="" style={{checkStyle}} type="checkbox"  checked  />{t.title}</Link> }
-                                
-                                    
-                                    
+
+                                    {s.id == t.subject_id && 
+                                        <Link to={`/${routerParams.chatid}/quiz/${t.id}`} className="btn " style={{background:"8c64d8",color:"#8c64d8",border:"2px solid"}}> 
+                                            {
+                                                t.complete == true
+                                                ?
+                                                    <input className=""  style={{alignItems:"left"}} type="checkbox" checked />
+                                                :
+                                                    <input className=""  style={{alignItems:"left"}} type="checkbox"/>
+                                               
+                                            }
+                                            {t.title}
+                                        </Link>
+
+                                    }
                                     </div>
                                 ))
                             }

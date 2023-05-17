@@ -13,9 +13,23 @@ function Courses(){
 
     const [user, setUser]= useState([])
     const routerParams = useParams()
+    const [userResult, setUserResult]= useState([])
+    
     useEffect(()=>{
         getUser()
+        getResult()
     },[])
+
+    const getResult = async()=>{
+        const payload={
+            "chat_id":routerParams.chatid
+        }
+        await axiosClient.post("/getResult",payload)
+            .then(({data})=>{
+                console.log(data.data);
+                setUserResult(data.data)
+    })
+    }
 
     const getUser = async()=>{
         const payload={
@@ -26,6 +40,17 @@ function Courses(){
             console.log(data.data);
             setUser(data.data)
         })
+    }
+
+    const feedback = async(text)=>{
+        // document.getElementsByTagName("input")[0].value
+        console.log("hui")
+        const payload={
+            // "chat_id":routerParams.chatid,
+            "text":text
+        }
+        await axiosClient.post("/sendFeedback",payload)
+        
     }
 
 
@@ -47,11 +72,7 @@ function Courses(){
                             </div>
                             <div class="offcanvas-body ">
                             <ul class="navbar-nav ">
-                                <li class="nav-item">
-                                    <div className="btn">
-                                <Link to="#" class="nav-link "  href="#">Главная</Link>
-                                    </div>
-                                </li>
+                                
                                 <li class="nav-item">
                                     <div className="btn">
                                 <Link to={`/${routerParams.chatid}/main`} class="nav-link" href="#">Курсы</Link>
@@ -61,17 +82,15 @@ function Courses(){
                                     <div className="btn">
                                 <Link to="#" class="nav-link " onClick={handleShow} href="#" style={{color:"#8c64d8"}}>Обратная связь</Link>
                                         <Modal show={show}>
-                                            <Modal.Header closeButton> 
+                                            <Modal.Header> 
                                                 <Modal.Title>Обратная связь</Modal.Title>
                                             </Modal.Header>
                                             <Modal.Body>
-                                                <input type="text"></input>
+                                                <input className="form-control" placeholder="Введите ваш отзыв"></input>
                                             </Modal.Body>
                                             <Modal.Footer>
                                             <button className="btn"  style={{background:"#8c64d8", color:"#FFFFFF"}} onClick={handleClose}>Закрыть</button>
-                                                <button className="btn"  style={{background:"#8c64d8", color:"#FFFFFF"}} onClick={handleClose}>
-                                                        Отправить
-                                                </button>
+                                                <button className="btn" type="submit" style={{background:"#8c64d8", color:"#FFFFFF"}} id="feedbackID" onClick={feedback}>Отправить</button>
                                             </Modal.Footer>
                                         </Modal>
 
@@ -100,30 +119,25 @@ function Courses(){
             <table class="table">
                 <thead>
                     <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Курс</th>
+                    <th scope="col">Предмет</th>
                     <th scope="col">Тест</th>
                     <th scope="col">Результат</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                    <th scope="row">1</th>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    </tr>
-                    <tr>
-                    <th scope="row">2</th>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    </tr>
-                    <tr>
-                    <th scope="row">3</th>
-                    <td colspan="2"></td>
-                    <td></td>
-                    </tr>
+                    
+                    
+                    {
+                        userResult.map((r)=>(
+                            <>
+                            <tr>
+                                <td>{r.subject}</td>
+                                <td>{r.test}</td>
+                                <td>{r.result}/{r.all_question}</td>
+                            </tr>
+                            </>
+                        ))
+                    }
                 </tbody>
                 </table>
                 </div>
