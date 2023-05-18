@@ -54,7 +54,10 @@ const checkStyle={
     border:"2px solid"
 }
     const getComplete = async (test_array) =>{
-        await axiosClient.post('/checkTest')
+        const payload ={
+            "chat_id":routerParams.chatid,
+        }
+        await axiosClient.post('/checkTest', payload)
         .then(async ({data})=>{
             setComplete(data.data)
             let ara_ara = data.data
@@ -77,7 +80,7 @@ const checkStyle={
           <div className="row" style={{background:"#8c64d8",height: "56px"}} > 
                 <nav class="navbar navbar fixed-top" style={{color:"#ffffff"}} >
                     <div class="container-fluid">
-                        <a class="navbar-brand " href="#" style={{color:"#ffffff"}}>Курсы</a>
+                        <a class="navbar-brand " href="#" style={{color:"#ffffff"}}>Тесты</a>
                         <button class="navbar-toggler btn btn-light"  type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrollingLabel" aria-controls="offcanvaskNavbar" aria-label="Toggle navigation" >
                             <span class="navbar-toggler-icon "> </span>
                         </button>

@@ -75,7 +75,7 @@ function Courses(){
                                 
                                 <li class="nav-item">
                                     <div className="btn">
-                                <Link to={`/${routerParams.chatid}/main`} class="nav-link" href="#">Курсы</Link>
+                                <Link to={`/${routerParams.chatid}/main`} class="nav-link" href="#">Тесты</Link>
                                     </div>
                                 </li>
                                 <li class="nav-item">
