@@ -28,7 +28,7 @@ function Login(){
       phone: phoneRef.current.value
     }
     console.log(payload);
-    axiosClient.post("/createUser", payload)
+    axiosClient.post(`/createUser`, payload)
       .then(({data})=>{
         if (data == 'OK') {
           navigate(`/${routerParams.chatid}/main`);
