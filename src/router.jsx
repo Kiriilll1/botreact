@@ -26,7 +26,7 @@ const router = createBrowserRouter([
         element:<Check/>,
     },
     {
-        path:"/:chatid/quiz/:testid",
+        path:"/:chatid/quiz/:testid/:testname",
         element: <Quiz/>
     },
     {

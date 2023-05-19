@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import axiosClient from "../axiosclient"
 import { useParams } from "react-router-dom"
 import { Link } from 'react-router-dom'
@@ -15,6 +15,8 @@ function Courses(){
     const routerParams = useParams()
     const [userResult, setUserResult]= useState([])
     
+    const feedbackRef = useRef()
+
     useEffect(()=>{
         getUser()
         getResult()
@@ -47,8 +49,11 @@ function Courses(){
         console.log("hui")
         const payload={
             // "chat_id":routerParams.chatid,
-            "text":text
+            "data": {
+                "text": feedbackRef.current.value
+            }
         }
+        console.log(payload);
         await axiosClient.post("/sendFeedback",payload)
         
     }
@@ -86,7 +91,7 @@ function Courses(){
                                                 <Modal.Title>Обратная связь</Modal.Title>
                                             </Modal.Header>
                                             <Modal.Body>
-                                                <input className="form-control" placeholder="Введите ваш отзыв"></input>
+                                                <input className="form-control" ref={feedbackRef} placeholder="Введите ваш отзыв"></input>
                                             </Modal.Body>
                                             <Modal.Footer>
                                             <button className="btn"  style={{background:"#8c64d8", color:"#FFFFFF"}} onClick={handleClose}>Закрыть</button>

@@ -31,7 +31,7 @@ function Check(){
         <div className="spinner-grow m-5 mx-auto" role="status" style={{color: '#8c64d8',width:"5rem", height:"5rem"}}>
         </div>
         <div>
-            <span className="visually-show fixed-bottom" style={{color:"#000000"}}>Loading...</span>
+            <span className="visually-show fixed-bottom" style={{color:"#000000"}}>Загрузка...</span>
         </div>
         </div>
     )

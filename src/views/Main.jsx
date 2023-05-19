@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import axiosClient from "../axiosclient"
 import { Link, useParams } from 'react-router-dom'
 import Login from "./Login"
@@ -15,6 +15,8 @@ function Main(){
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
+
+    const feedbackRef = useRef()
 
     useEffect(()=> {
         getSubject()
@@ -37,8 +39,11 @@ function Main(){
         console.log("hui")
         const payload={
             // "chat_id":routerParams.chatid,
-            "text":text
+            "data": {
+                "text": feedbackRef.current.value
+            }
         }
+        console.log(payload);
         await axiosClient.post("/sendFeedback",payload)
         
     }
@@ -71,6 +76,7 @@ const checkStyle={
                 }
             })
             setTest(ar)
+            console.log(ar);
         })
     }
 
@@ -105,7 +111,7 @@ const checkStyle={
                                             </Modal.Header>
                                             <Modal.Body>
                                                 
-                                                <input className="form-control" placeholder="Введите ваш отзыв"></input>
+                                                <input ref={feedbackRef} className="form-control" placeholder="Введите ваш отзыв" ></input>
                                             </Modal.Body>
                                             <Modal.Footer>
                                             <button className="btn"  style={{background:"#8c64d8", color:"#FFFFFF"}} onClick={handleClose}>Закрыть</button>
@@ -142,16 +148,21 @@ const checkStyle={
                                     <div className="from-check row ">
 
                                     {s.id == t.subject_id && 
-                                        <Link to={`/${routerParams.chatid}/quiz/${t.id}`} className="btn " style={{background:"8c64d8",color:"#8c64d8",border:"2px solid"}}> 
+                                        <Link to={`/${routerParams.chatid}/quiz/${t.id}/${t.title}`} className="btn" style={{background:"8c64d8",color:"#8c64d8",border:"2px solid"}}> 
+                                            <div className="row">
                                             {
                                                 t.complete == true
                                                 ?
-                                                    <input className=""  style={{alignItems:"left"}} type="checkbox" checked />
+                                                    <><div className="col-xs" style={{width: '10px',checkStyle}}><input style={{alignItems:"left"}} type="checkbox" checked/></div>
+                                                    <div className='col'>{t.title}</div>
+                                                    </>
                                                 :
-                                                    <input className=""  style={{alignItems:"left"}} type="checkbox"/>
-                                               
+                                                    <>
+                                                        <div className="col-xs" style={{width: '10px'}}><input style={{alignItems:"left"}} type="checkbox" disabled/></div>
+                                                        <div className='col'>{t.title}</div>
+                                                    </>
                                             }
-                                            {t.title}
+                                            </div>
                                         </Link>
 
                                     }

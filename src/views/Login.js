@@ -62,11 +62,11 @@ function Login(){
           </div>
       <label style={{color:"#f8021e"}}>{error.email_error}</label>     
           <div className="mb-3 mt-3">
-      <input ref={emailRef} type="email" className="form-control" id="exampleFormControlInput3" placeholder="@email"/>
+      <input ref={emailRef} type="email" className="form-control" id="exampleFormControlInput3" placeholder="@email(необязательно)"/>
         </div>
       <label style={{color:"#f8021e"}}>{error.phone_error}</label>   
         <div className="mb-4 mt-1">
-      <input ref={phoneRef} type="number" className="form-control" id="exampleFormControlInput4" placeholder="Номер телефона"/>
+      <input ref={phoneRef} type="number" className="form-control" id="exampleFormControlInput4" placeholder="Номер телефона(необязательно)"/>
       </div>
       </div>
       <div className="d-grid gap-2">
