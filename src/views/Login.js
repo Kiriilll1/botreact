@@ -42,6 +42,8 @@ function Login(){
 
   }
 
+// сделать чекбоксы фиолетовым цветом, добавить отступ
+// добавить отспуп к тестам 
 
   return(
     <div className="container text-center">

@@ -3,6 +3,7 @@ import axiosClient from "../axiosclient"
 import { useParams } from "react-router-dom"
 import { Link } from 'react-router-dom'
 import { Modal, ModalDialog } from "react-bootstrap"
+import { useNavigate } from 'react-router-dom'
 
 // style={{backgroundColor:"#8c64d8",color:"#ffffff"}}
 function Courses(){
@@ -10,6 +11,9 @@ function Courses(){
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
+    const navigate = useNavigate()
+
+    
 
     const [user, setUser]= useState([])
     const routerParams = useParams()
@@ -20,7 +24,26 @@ function Courses(){
     useEffect(()=>{
         getUser()
         getResult()
+        checkUserId(routerParams)
     },[])
+    
+    const checkUserId = (routerParams) => {
+        const payload = {
+            'data': routerParams.chatid
+        }
+        axiosClient.post("/getUserId",payload)
+        .then((response)=>{
+            if(response.data=="True"){
+                navigate(`/${routerParams.chatid}/main`)
+            }
+            else{
+                navigate(`/${routerParams.chatid}/login`)
+            }
+        })
+    }
+    
+
+
 
     const getResult = async()=>{
         const payload={

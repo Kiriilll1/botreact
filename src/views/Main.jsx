@@ -54,9 +54,12 @@ const shadowButton={
     color: "#FFFFFF"
 };
 const checkStyle={
-    alignItems:"center",
-    backgroundColor:"#8c64d8",
-    border:"2px solid"
+    // background:"8c64d8",
+    color:"#8c64d8",
+    border:"2px solid",
+    
+    
+
 }
     const getComplete = async (test_array) =>{
         const payload ={
@@ -145,27 +148,28 @@ const checkStyle={
                         <div className="card card-body" style={{background:""}}>
                             {
                                 test.map((t) => (
-                                    <div className="from-check row ">
-
-                                    {s.id == t.subject_id && 
-                                        <Link to={`/${routerParams.chatid}/quiz/${t.id}/${t.title}`} className="btn" style={{background:"8c64d8",color:"#8c64d8",border:"2px solid"}}> 
-                                            <div className="row">
-                                            {
-                                                t.complete == true
+                                    <div className="row ">
+                                                {t.complete == true
                                                 ?
-                                                    <><div className="col-xs" style={{width: '10px',checkStyle}}><input style={{alignItems:"left"}} type="checkbox" checked/></div>
-                                                    <div className='col'>{t.title}</div>
-                                                    </>
+                                                    <>
+                                                    {s.id == t.subject_id &&
+                                                        <Link to={`/${routerParams.chatid}/quiz/${t.id}/${t.title}`} className="btn d-grid mt-2" style={{background: '#8c64d8', color: "#ffffff",opacity:"80%"}}>
+                                                            {t.title} 
+                                                        </Link>}
+                                                        </>
+                                                        
                                                 :
                                                     <>
-                                                        <div className="col-xs" style={{width: '10px'}}><input style={{alignItems:"left"}} type="checkbox" disabled/></div>
-                                                        <div className='col'>{t.title}</div>
+                                                    {s.id == t.subject_id &&
+                                                        <Link to={`/${routerParams.chatid}/quiz/${t.id}/${t.title}`} className="btn d-grid mt-2" style={{background:"8c64d8",color:"#8c64d8",border:"2px solid"}}>
+                                                        {t.title} 
+                                                        </Link>}
                                                     </>
-                                            }
-                                            </div>
-                                        </Link>
+                                                }
+                                            
+                                        
 
-                                    }
+                                    
                                     </div>
                                 ))
                             }

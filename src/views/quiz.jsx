@@ -216,6 +216,26 @@ function Quiz(){
     
     const progress = Math.round((compliteQuestion / totalQuestion) * 100)
 
+    const checkstyle={
+        color:"#8c64d8",
+        border:"2px solid",
+        margin:"5px 5px 0px 0px ",
+
+    } 
+    const radiostyle={
+    margin:"0px 5px 0px 0px ",
+    appearance: "none",
+    border:"2px solid",
+    // border: "50%",
+    width: "16px",
+    height: "16px",
+    color:"#8c64d8",
+    
+    transition: "0.2s all linear",
+
+    position: "relative",
+    top: "4px",
+    }
     
     return(
         <>
@@ -258,18 +278,19 @@ function Quiz(){
                                             {
                                                 q.type == 'text' 
                                                 ?
-                                                    <input class="text" className="form-control" placeholder="Ответ" style={{verticalAlign:"middle",margin:"0" }} type={q.type} id={q.id} name={q.id} onKeyUp={e => handleClicktext(e.target.value, a, q)} />
+                                                    <input class="text" className="form-control" placeholder="Ответ" style={{ }} type={q.type} id={q.id} name={q.id} onKeyUp={e => handleClicktext(e.target.value, a, q)} />
                                                 : 
                                                     q.type=="radio"
                                                     ?
                                                         <>
+                                                        
+                                                            <input class="form-check-input " style={radiostyle} type={q.type} id={q.id} name={q.id} onChange={e => handleClick(e, a, q)} />
                                                             {a.text}
-                                                            <input class="form-check-input" style={{verticalAlign:"middle",margin:"0" }} type={q.type} id={q.id} name={q.id} onChange={e => handleClick(e, a, q)} />
                                                         </>
                                                     :
                                                         <>
+                                                            <input class="form-check-input " style={checkstyle} type={q.type} id={q.id} name={q.id} onChange={e => handleClickbox(e, a, q)} />
                                                             {a.text}
-                                                            <input class="form-check-input" style={{verticalAlign:"middle",margin:"0" }} type={q.type} id={q.id} name={q.id} onChange={e => handleClickbox(e, a, q)} />
                                                         </>
 
 

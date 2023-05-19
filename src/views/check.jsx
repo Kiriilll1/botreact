@@ -9,6 +9,7 @@ function Check(){
     const navigate = useNavigate()
     useEffect(()=>{
         checkUserId(routerParams)
+        
     },[])
 
     const checkUserId = (routerParams) => {
