@@ -33,10 +33,7 @@ function Courses(){
         }
         axiosClient.post("/getUserId",payload)
         .then((response)=>{
-            if(response.data=="True"){
-                navigate(`/${routerParams.chatid}/main`)
-            }
-            else{
+            if(response.data=="False"){
                 navigate(`/${routerParams.chatid}/login`)
             }
         })
