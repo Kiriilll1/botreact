@@ -50,11 +50,11 @@ function Quiz(){
         const payload = {
             "test_id": routerParams.testid
         }
-        await axiosClient.post('/getQuestionAnswer', payload)
+        axiosClient.post('/getQuestionAnswer', payload)
         .then(async ({data})=>{
-            await setQuestion(data.questions)
-            await setAnswer(data.answers)
-            await setTotalQuestion(data.questions.length)
+            setQuestion(data.questions)
+            setAnswer(data.answers)
+            setTotalQuestion(data.questions.length)
             setLoading(false)
         })
     }
@@ -79,14 +79,14 @@ function Quiz(){
         const answerChecked = answer.filter((elem) => {
             return elem.checked
         })
-        console.log(answerChecked)
+        
         const answerQuestionId = answerChecked.map((el)=> {
             return el.question_id
         })
         const answerQuestionIdSet = [...new Set(answerQuestionId)];
         // setAnswerQuestionIdSet([...new Set(answerQuestionId)])
         setCompliteQuestion(answerQuestionIdSet.length)
-        console.log(answerQuestionIdSet)
+        
         if (checkbox.checked){
             checkanswer.push(a)
             
@@ -100,7 +100,7 @@ function Quiz(){
                 return obj.q_id !== q.id
             }))
         }
-        console.log(jopago);
+        
     }
 
     
@@ -113,7 +113,7 @@ function Quiz(){
         } else {
             jopago[index] = {q_id: q.id, q_type: q.type, answer: e}
         }
-        console.log(jopago)
+        
 
         
         // a['checked'] = e.target.checked;
@@ -135,7 +135,6 @@ function Quiz(){
         // if (document.getElementById(q.id).value!=""){
         //     answerQuestionIdSet.push(q.id)
         // }
-        console.log("asdasda", answerQuestionIdSet);
         setCompliteQuestion(answerQuestionIdSet.length)
     }
 
@@ -154,7 +153,6 @@ function Quiz(){
         const answerChecked = answer.filter((elem) => {
             return elem.checked
         })
-        console.log(answerChecked)
         const answerQuestionId = answerChecked.map((el)=> {
             return el.question_id
         })
@@ -167,7 +165,7 @@ function Quiz(){
         setChecked(true)
         if (jopago.length == 0) {
             test()
-            console.log(jopago);
+        
         }
 
         const answerChecked = answer.filter((elem) => {
@@ -182,7 +180,7 @@ function Quiz(){
             "data": jopago
         }
         let wrongQuestion
-        await axiosClient.post('/checkResult',payload)
+        axiosClient.post('/checkResult',payload)
         .then(async ({data})=>{
             wrongQuestion = data.questions.length
             setWrongQuestion(data.questions)
@@ -210,7 +208,7 @@ function Quiz(){
             "all_question":totalQuestion
 
         }
-        console.log(load);
+        
         await axiosClient.post('/createResult',load)
     }
     
@@ -365,7 +363,7 @@ function Quiz(){
                         {
                             totalQuestion===totalQuestion-totalWrongQuestion &&
                             <div> Ты ответил на все вопросы правильно вот твой SIUUUU
-                                <ReactPlayer url="https://www.youtube.com/watch?v=TP_FoJfDPCQ&ab_channel=ElTrend" width="100%" controls></ReactPlayer>
+                                <ReactPlayer url="https://www.youtube.com/watch?v=TP_FoJfDPCQ&ab_channel=ElTrend" width="100%" controls loop={true} playing={true}></ReactPlayer>
                             </div>
                         }
                     

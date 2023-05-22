@@ -27,7 +27,7 @@ function Login(){
       email: emailRef.current.value,
       phone: phoneRef.current.value
     }
-    console.log(payload);
+  
     axiosClient.post(`/createUser`, payload)
       .then(({data})=>{
         if (data == 'OK') {
@@ -41,9 +41,6 @@ function Login(){
   
 
   }
-
-// сделать чекбоксы фиолетовым цветом, добавить отступ
-// добавить отспуп к тестам 
 
   return(
     <div className="container text-center">

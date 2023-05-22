@@ -26,7 +26,7 @@ function Main(){
     const getSubject = async () => {
         await axiosClient.post('/getSubTest')
             .then(async ({data}) => {
-                await setSubject(data.subjects)
+                setSubject(data.subjects)
 
                 // await setTest(data.tests)
                 let test_array = data.tests
@@ -36,14 +36,14 @@ function Main(){
     }
     const feedback = async(text)=>{
         // document.getElementsByTagName("input")[0].value
-        console.log("hui")
+        
         const payload={
             // "chat_id":routerParams.chatid,
             "data": {
                 "text": feedbackRef.current.value
             }
         }
-        console.log(payload);
+        
         await axiosClient.post("/sendFeedback",payload)
         
     }
@@ -79,7 +79,7 @@ const checkStyle={
                 }
             })
             setTest(ar)
-            console.log(ar);
+            
         })
     }
 
@@ -87,7 +87,7 @@ const checkStyle={
         
         <div className="container" >
           <div className="row" style={{background:"#8c64d8",height: "56px"}} > 
-                <nav class="navbar navbar fixed-top" style={{color:"#ffffff"}} >
+                <nav class="navbar navbar " style={{color:"#ffffff"}} >
                     <div class="container-fluid">
                         <a class="navbar-brand " href="#" style={{color:"#ffffff"}}>Тесты</a>
                         <button class="navbar-toggler btn btn-light"  type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrollingLabel" aria-controls="offcanvaskNavbar" aria-label="Toggle navigation" >
@@ -153,7 +153,7 @@ const checkStyle={
                                                 ?
                                                     <>
                                                     {s.id == t.subject_id &&
-                                                        <Link to={`/${routerParams.chatid}/quiz/${t.id}/${t.title}`} className="btn d-grid mt-2" style={{background: '#8c64d8', color: "#ffffff",opacity:"80%"}}>
+                                                        <Link to={`/${routerParams.chatid}/quiz/${t.id}/${t.title}`} className="btn d-grid mt-2" style={{background: '#8c64d8', color: "#ffffff",opacity:"60%"}}>
                                                             {t.title} 
                                                         </Link>}
                                                         </>

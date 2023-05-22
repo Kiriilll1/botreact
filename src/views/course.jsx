@@ -48,7 +48,7 @@ function Courses(){
         }
         await axiosClient.post("/getResult",payload)
             .then(({data})=>{
-                console.log(data.data);
+                
                 setUserResult(data.data)
     })
     }
@@ -59,21 +59,21 @@ function Courses(){
         }
         await axiosClient.post("/getUser", payload)
         .then(({data})=>{
-            console.log(data.data);
+            
             setUser(data.data)
         })
     }
 
     const feedback = async(text)=>{
         // document.getElementsByTagName("input")[0].value
-        console.log("hui")
+        
         const payload={
             // "chat_id":routerParams.chatid,
             "data": {
                 "text": feedbackRef.current.value
             }
         }
-        console.log(payload);
+        
         await axiosClient.post("/sendFeedback",payload)
         
     }
