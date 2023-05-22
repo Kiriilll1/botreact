@@ -26,7 +26,7 @@ function Main(){
     const getSubject = async () => {
         await axiosClient.post('/getSubTest')
             .then(async ({data}) => {
-                setSubject(data.subjects)
+                await setSubject(data.subjects)
 
                 // await setTest(data.tests)
                 let test_array = data.tests
@@ -153,7 +153,7 @@ const checkStyle={
                                                 ?
                                                     <>
                                                     {s.id == t.subject_id &&
-                                                        <Link to={`/${routerParams.chatid}/quiz/${t.id}/${t.title}`} className="btn d-grid mt-2" style={{background: '#8c64d8', color: "#ffffff",opacity:"60%"}}>
+                                                        <Link to={`/${routerParams.chatid}/quiz/${t.id}/${t.title}`} className="btn d-grid mt-2" style={{background: '#8c64d8', color: "#ffffff",opacity:"70%"}}>
                                                             {t.title} 
                                                         </Link>}
                                                         </>

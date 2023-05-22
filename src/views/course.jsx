@@ -73,7 +73,7 @@ function Courses(){
                 "text": feedbackRef.current.value
             }
         }
-        
+        console.log(payload);
         await axiosClient.post("/sendFeedback",payload)
         
     }
