@@ -16,6 +16,8 @@ function Main(){
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
+    const [feedlabel, setFeedlabel] = useState("")
+
     const feedbackRef = useRef()
 
     useEffect(()=> {
@@ -35,6 +37,9 @@ function Main(){
             })
     }
     const feedback = async(text)=>{
+        setFeedlabel("Отзыв отправлен!")
+        
+
         // document.getElementsByTagName("input")[0].value
         
         const payload={
@@ -57,10 +62,8 @@ const checkStyle={
     // background:"8c64d8",
     color:"#8c64d8",
     border:"2px solid",
-    
-    
-
 }
+
     const getComplete = async (test_array) =>{
         const payload ={
             "chat_id":routerParams.chatid,
@@ -113,12 +116,12 @@ const checkStyle={
                                                 <Modal.Title>Обратная связь</Modal.Title>
                                             </Modal.Header>
                                             <Modal.Body>
-                                                
+                                                <label className="label" style={{color:"#07da63", transition:"1s"}}>{feedlabel}</label>                                                           
                                                 <input ref={feedbackRef} className="form-control" placeholder="Введите ваш отзыв" ></input>
                                             </Modal.Body>
                                             <Modal.Footer>
                                             <button className="btn"  style={{background:"#8c64d8", color:"#FFFFFF"}} onClick={handleClose}>Закрыть</button>
-                                                <button className="btn" type="submit" style={{background:"#8c64d8", color:"#FFFFFF"}} id="feedbackID" onClick={feedback}>
+                                                <button className="btn" type="submit" style={{background:"#8c64d8", color:"#FFFFFF"}} id="feedbackID" onClick={feedback} >
                                                         Отправить
                                                 </button>
                                             </Modal.Footer>
@@ -179,7 +182,6 @@ const checkStyle={
                 ))
             }
 
-            {/* Добавить чекбоксы при выполнении теста */}
         
       </div>
       )
