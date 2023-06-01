@@ -26,7 +26,7 @@ function Main(){
     const getSubject = async () => {
         await axiosClient.post('/getSubTest')
             .then(async ({data}) => {
-                await setSubject(data.subjects)
+                setSubject(data.subjects)
 
                 // await setTest(data.tests)
                 let test_array = data.tests
