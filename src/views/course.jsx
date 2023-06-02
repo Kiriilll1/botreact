@@ -13,6 +13,7 @@ function Courses(){
     const handleShow = () => setShow(true);
     const navigate = useNavigate()
 
+    const [feedlabel, setFeedlabel] = useState("")
     
 
     const [user, setUser]= useState([])
@@ -65,6 +66,7 @@ function Courses(){
     }
 
     const feedback = async(text)=>{
+        setFeedlabel("Отзыв отправлен!")
         // document.getElementsByTagName("input")[0].value
         
         const payload={
@@ -84,7 +86,7 @@ function Courses(){
     return(
         <div className='container'>
             <div className="row" style={{background:"#8c64d8",height: "56px"}} > 
-                <nav class="navbar navbar fixed-top" style={{color:"#ffffff"}} >
+                <nav class="navbar navbar " style={{color:"#ffffff"}} >
                     <div class="container-fluid">
                         <a class="navbar-brand" href="#" style={{color:"#ffffff"}}>Мой профиль</a>
                         <button class="navbar-toggler btn btn-light"  type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrollingLabel" aria-controls="offcanvaskNavbar" aria-label="Toggle navigation" >
@@ -111,6 +113,7 @@ function Courses(){
                                                 <Modal.Title>Обратная связь</Modal.Title>
                                             </Modal.Header>
                                             <Modal.Body>
+                                                <label className="label" style={{color:"#07da63", transition:"1s"}}>{feedlabel}</label>
                                                 <input className="form-control" ref={feedbackRef} placeholder="Введите ваш отзыв"></input>
                                             </Modal.Body>
                                             <Modal.Footer>

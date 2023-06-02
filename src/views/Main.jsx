@@ -39,7 +39,6 @@ function Main(){
     const feedback = async(text)=>{
         setFeedlabel("Отзыв отправлен!")
         
-
         // document.getElementsByTagName("input")[0].value
         
         const payload={
