@@ -145,11 +145,11 @@ function Courses(){
                 </div>
             <div className="card">    
             <table class="table">
-                <thead>
+                <thead class>
                     <tr>
                     <th scope="col">Предмет</th>
                     <th scope="col">Тест</th>
-                    <th scope="col">Результат</th>
+                    <th className="row" scope="col">Результат</th>
                     </tr>
                 </thead>
                 <tbody>

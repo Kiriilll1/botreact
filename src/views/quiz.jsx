@@ -364,8 +364,8 @@ function Quiz(){
                             </>
                         ))}
                         <div><div className="d-grid gap-2 p-2 ">
-                            <Link to={`/${routerParams.chatid}/main`} className="btn right" style={{background:"#8c64d8",color:"#ffffff"}}>Вернуться к тестам</Link>
-                            <Link to={`/${routerParams.chatid}/quiz`} className="btn left" style={{background:"#8c64d8",color:"#ffffff"}}>Перепройти тест</Link>
+                            {/* <Link to={`/${routerParams.chatid}/main`} className="btn right" style={{background:"#8c64d8",color:"#ffffff"}}>Вернуться к тестам</Link>
+                            <Link to={`/${routerParams.chatid}/quiz`} className="btn left" style={{background:"#8c64d8",color:"#ffffff"}}>Перепройти тест</Link> */}
                         </div>
                         
                         </div>
